@@ -78,7 +78,6 @@ function populateEmployeeDetails() {
         optionMod.setAttribute("value", index)
         optionMod.setAttribute("class", "modEmpOptions")
         optionMod.innerHTML = array[index][0] + " " + array[index][1];
-        console.log(index + " --------> " + array);
         document.getElementById("modEmployeeList").appendChild(optionMod);
         document.getElementById("modEmployeeList").setAttribute("value", 1)
 

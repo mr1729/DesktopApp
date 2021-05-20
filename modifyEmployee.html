@@ -1,0 +1,98 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./functionality.js"></script>
+</head>
+
+<body onload="populateEmployeeDetails()">
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Invoicing</h2>
+            <ul>
+                <li><a href="#" id="newEmp">Enter New Emplyee</a></li>
+                <li><a href="#" id="genInv">Generate Invoice</a></li>
+                <li><a href="#" id="modEmp">Modify Employee</a></li>
+            </ul>
+        </div>
+
+        <div class="main_content" id="genInvContent">
+            <div class="header">
+                <h2>Generate Invoice</h2>
+            </div>
+            <table align="center">
+                <tr>
+                    <td><label for="cars">Choose an Employee:</label></td>
+                    <td><select id="employeeList"></select></td>
+                </tr>
+            </table>
+            <div id="invoice">
+                <table>
+                    <tr>
+                        <td>Invoice Number: <input type="text" id="invoiceNum"></td>
+                        <td>Invoice date: <input type="date" id="invDate"></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity of hours</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="desc1" size=50></td>
+                        <td><input type="number" id="hours1"></td>
+                    </tr>
+                </table>
+                <button onclick="populateInvoice()">Generate PDF</button>
+            </div>
+        </div>
+
+        <div class="main_content" id="newEmpContent">
+            <div class="header">
+                <h1>Enter The New Employee Information</h1>
+            </div>
+            <table align="center">
+                <tr>
+                    <td>First Name: </td>
+                    <td><input type="text" placeholder="first name" id="fname" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Last Name: </td>
+                    <td><input type="text" placeholder="last name" id="lname" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Pay: </td>
+                    <td><input type="number" placeholder="enter pay" id="pay" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Net: </td>
+                    <td><input type="number" placeholder="enter net" id="net" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Company Name: </td>
+                    <td><input type="text" placeholder="company name" id="cname" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address1: </td>
+                    <td><input type="text" placeholder="street.," id="addr1" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address2: </td>
+                    <td><input type="text" placeholder="floor, apt, suite" id="addr2" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address3: </td>
+                    <td><input type="text" placeholder="city, state, zip" id="addr3" size="50"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><button onclick="insertIntoFile()">Submit</button></td>
+                </tr>
+            </table>
+
+            <div>
+                <h3 align="center" style="color: blue" id="message"></h3>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

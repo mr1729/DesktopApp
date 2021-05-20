@@ -1,0 +1,22 @@
+{
+  "name": "util.js",
+  "main": "util.js",
+  "ignore": [
+    ".gitignore"
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "homepage": "https://github.com/kbond/util.js",
+  "version": "1.0.0",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "1711abb31124ba2bad58d5538792fb3cdbd0d532"
+  },
+  "_source": "https://github.com/kbond/util.js.git",
+  "_target": "^1.0.0",
+  "_originalSource": "util.js",
+  "_direct": true
+}

@@ -71,14 +71,12 @@ function populateEmployeeDetails() {
 
     Employees.forEach((value, index, array) => {
         var arr = value.split("~");
-        console.log(arr + "---" + arr[0] + "---" + arr[1])
         var optionMod = document.createElement("option");
         optionMod.setAttribute("value", index)
         optionMod.setAttribute("class", "modEmpOptions")
         var text = document.createTextNode(arr[0] + " " + arr[1]);
         optionMod.appendChild(text);
         document.getElementById("modEmployeeList").add(optionMod);
-        document.getElementById("modEmployeeList").setAttribute("value", index);
 
         var optionNewEmp = document.createElement("option");
         optionNewEmp.setAttribute("value", index)
@@ -86,7 +84,6 @@ function populateEmployeeDetails() {
         var text2 = document.createTextNode(arr[0] + " " + arr[1]);
         optionNewEmp.appendChild(text2);
         document.getElementById("employeeList").add(optionNewEmp);
-        document.getElementById("employeeList").setAttribute("value", index);
     })
 }
 
@@ -234,7 +231,7 @@ function validateGenInv() {
     var invdate = document.getElementById("invDate").value;
     var Desc = document.getElementById("desc1").value;
     var hours = document.getElementById("hours1").value;
-
+    var index = document.getElementById("modEmployeeList").value;
     if (invoiceNum === "" || invoiceNum === undefined) {
         errors = 1;
         document.getElementById("genMessage").setAttribute("class", "error");
@@ -251,6 +248,10 @@ function validateGenInv() {
         errors = 1;
         document.getElementById("genMessage").setAttribute("class", "error");
         document.getElementById("genMessage").innerHTML = "******Plese Enter Hours******";
+    } else if (index === undefined || Employees.length <= 0) {
+        errors = 1;
+        document.getElementById("genMessage").setAttribute("class", "error");
+        document.getElementById("genMessage").innerHTML = "******Please Select An Employee******";
     } else {
         errors = 0;
     }
@@ -258,9 +259,12 @@ function validateGenInv() {
 
 function populateModEmployeeTable() {
     var index = document.getElementById("modEmployeeList").value;
-    console.log(Employees + "-----" + index);
-    var employee = Employees[index].split("~");
-    var address = employee[5].split("*");
+    var employee = ["", "", "", "", ""];
+    var address = ["", "", ""]
+    if (index != undefined && Employees.length > 0) {
+        employee = Employees[index].split("~");
+        address = employee[5].split("*");
+    }
     document.getElementById("modfname").value = employee[0];
     document.getElementById("modlname").value = employee[1];
     document.getElementById("modpay").value = employee[2];
@@ -273,36 +277,46 @@ function populateModEmployeeTable() {
 
 function insertModEmpIntoFile() {
     var index = document.getElementById("modEmployeeList").value;
-    var employee = Employees[index].split("~");
-    var name = employee[0] + " " + employee[1]
-    var firstname = document.getElementById("modfname").value;
-    var lastname = document.getElementById("modlname").value;
-    var pay = document.getElementById("modpay").value;
-    var net = document.getElementById("modnet").value;
-    var companyname = document.getElementById("modcname").value;
-    var address = document.getElementById("modaddr1").value + "*" + document.getElementById("modaddr2").value + "*" + document.getElementById("modaddr3").value;
-    var data = firstname + "~" + lastname + "~" + pay + "~" + net + "~" + companyname + "~" + address;
-    Employees.splice(index, 1);
-    Employees.push(data);
-    document.getElementById("message").setAttribute("class", "success");
-    document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
+    if (Employees.length > 0 && index != undefined) {
+        var employee = Employees[index].split("~");
+        var name = employee[0] + " " + employee[1]
+        var firstname = document.getElementById("modfname").value;
+        var lastname = document.getElementById("modlname").value;
+        var pay = document.getElementById("modpay").value;
+        var net = document.getElementById("modnet").value;
+        var companyname = document.getElementById("modcname").value;
+        var address = document.getElementById("modaddr1").value + "*" + document.getElementById("modaddr2").value + "*" + document.getElementById("modaddr3").value;
+        var data = firstname + "~" + lastname + "~" + pay + "~" + net + "~" + companyname + "~" + address;
+        Employees.splice(index, 1);
+        Employees.push(data);
+        document.getElementById("message").setAttribute("class", "success");
+        document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
 
-    fs.writeFileSync("employeeDetails", Employees.join("\n"), 'utf-8');
-    populateEmployeeDetails();
-    populateModEmployeeTable();
-    document.getElementById("modMessage").setAttribute("class", "success")
-    document.getElementById("modMessage").innerHTML = "*******Modified Employee " + name + "******"
+        fs.writeFileSync("employeeDetails", Employees.join("\n") + "\n", 'utf-8');
+        populateEmployeeDetails();
+        populateModEmployeeTable();
+        document.getElementById("modMessage").setAttribute("class", "success")
+        document.getElementById("modMessage").innerHTML = "*******Modified Employee " + name + "******"
+    } else {
+        document.getElementById("modMessage").setAttribute("class", "error")
+        document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"
+    }
 }
 
 function removeEmpFromFile() {
     var index = document.getElementById("modEmployeeList").value;
-    var employee = Employees[index].split("~");
-    var name = employee[0] + " " + employee[1]
-    Employees.splice(index, 1);
-    var data = Employees.join("\n");
-    fs.writeFileSync("employeeDetails", data, 'utf-8');
-    populateEmployeeDetails();
-    populateModEmployeeTable();
-    document.getElementById("modMessage").setAttribute("class", "error")
-    document.getElementById("modMessage").innerHTML = "*******Removed Employee " + name + "******"
+    if (Employees.length > 0 && index != undefined) {
+        var employee = Employees[index].split("~");
+        var name = employee[0] + " " + employee[1]
+        Employees.splice(index, 1);
+        var data = Employees.join("\n") + "\n";
+        fs.writeFileSync("employeeDetails", data, 'utf-8');
+        populateEmployeeDetails();
+        populateModEmployeeTable();
+        document.getElementById("modMessage").setAttribute("class", "error")
+        document.getElementById("modMessage").innerHTML = "*******Removed Employee " + name + "******"
+    } else {
+        document.getElementById("modMessage").setAttribute("class", "error")
+        document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"
+    }
 }

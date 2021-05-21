@@ -4,7 +4,28 @@
     "description": "first desktop app",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "postinstall": "install-app-deps",
+        "start": "npm install && electron ./app",
+        "pack": "build --dir",
+        "dist": "build"
+    },
+    "build": {
+        "appId": "yourappid",
+        "category": "your.app.category.type",
+        "dmg": {
+            "icon": "./image/logo.ico",
+            "contents": [{
+                    "x": 110,
+                    "y": 150
+                },
+                {
+                    "x": 240,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        }
     },
     "author": "sai",
     "license": "ISC",
@@ -12,7 +33,6 @@
         "electron": "^12.0.7"
     },
     "dependencies": {
-        "bower": "^1.8.12",
         "electron-builder": "^22.10.5",
         "pdfkit": "^0.12.1"
     }

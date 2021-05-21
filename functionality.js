@@ -287,16 +287,21 @@ function insertModEmpIntoFile() {
         var companyname = document.getElementById("modcname").value;
         var address = document.getElementById("modaddr1").value + "*" + document.getElementById("modaddr2").value + "*" + document.getElementById("modaddr3").value;
         var data = firstname + "~" + lastname + "~" + pay + "~" + net + "~" + companyname + "~" + address;
-        Employees.splice(index, 1);
-        Employees.push(data);
-        document.getElementById("message").setAttribute("class", "success");
-        document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
+        if (!Employees.includes(data)) {
+            Employees.splice(index, 1);
+            Employees.push(data);
+            document.getElementById("message").setAttribute("class", "success");
+            document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
 
-        fs.writeFileSync("employeeDetails", Employees.join("\n") + "\n", 'utf-8');
-        populateEmployeeDetails();
-        populateModEmployeeTable();
-        document.getElementById("modMessage").setAttribute("class", "success")
-        document.getElementById("modMessage").innerHTML = "*******Modified Employee " + name + "******"
+            fs.writeFileSync("employeeDetails", Employees.join("\n") + "\n", 'utf-8');
+            populateEmployeeDetails();
+            populateModEmployeeTable();
+            document.getElementById("modMessage").setAttribute("class", "success")
+            document.getElementById("modMessage").innerHTML = "*******Modified Employee " + name + "******"
+        } else {
+            document.getElementById("modMessage").setAttribute("class", "error")
+            document.getElementById("modMessage").innerHTML = "*******No Change In Employee Data******"
+        }
     } else {
         document.getElementById("modMessage").setAttribute("class", "error")
         document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"

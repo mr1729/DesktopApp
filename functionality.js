@@ -2,7 +2,6 @@ let fs = require('fs');
 let pdfDoc = require('pdfkit');
 let employeeFileName = "employeeDetails"
 let Employees = new Array();
-let emps = new Array();
 let errors = 0;
 
 function load() {
@@ -48,14 +47,11 @@ function insertIntoFile() {
 }
 
 function populateEmployeeDetails() {
-    emps = new Array();
     if (fs.existsSync(employeeFileName)) {
         let data = fs.readFileSync(employeeFileName, 'utf8').split('\n')
         data.forEach((contact, index) => {
             if (contact != "" && !Employees.includes(contact)) {
-                let employee = contact.split('~');
                 Employees.push(contact)
-                emps.push(employee);
             }
         })
     } else {
@@ -66,27 +62,31 @@ function populateEmployeeDetails() {
         })
     }
 
-    document.querySelectorAll('.modEmpoptions').forEach(function(a) {
+    document.querySelectorAll('.modEmpOptions').forEach(function(a) {
         a.remove()
     })
     document.querySelectorAll('.newEmpOptions').forEach(function(a) {
         a.remove()
     })
 
-    emps.forEach((value, index, array) => {
+    Employees.forEach((value, index, array) => {
+        var arr = value.split("~");
+        console.log(arr + "---" + arr[0] + "---" + arr[1])
         var optionMod = document.createElement("option");
         optionMod.setAttribute("value", index)
         optionMod.setAttribute("class", "modEmpOptions")
-        optionMod.innerHTML = array[index][0] + " " + array[index][1];
-        document.getElementById("modEmployeeList").appendChild(optionMod);
-        document.getElementById("modEmployeeList").setAttribute("value", 1)
+        var text = document.createTextNode(arr[0] + " " + arr[1]);
+        optionMod.appendChild(text);
+        document.getElementById("modEmployeeList").add(optionMod);
+        document.getElementById("modEmployeeList").setAttribute("value", index);
 
         var optionNewEmp = document.createElement("option");
         optionNewEmp.setAttribute("value", index)
         optionNewEmp.setAttribute("class", "newEmpOptions")
-        optionNewEmp.innerHTML = array[index][0] + " " + array[index][1];
-        document.getElementById("employeeList").appendChild(optionNewEmp);
-        document.getElementById("employeeList").setAttribute("value", 1)
+        var text2 = document.createTextNode(arr[0] + " " + arr[1]);
+        optionNewEmp.appendChild(text2);
+        document.getElementById("employeeList").add(optionNewEmp);
+        document.getElementById("employeeList").setAttribute("value", index);
     })
 }
 

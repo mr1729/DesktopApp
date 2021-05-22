@@ -1,36 +1,25 @@
 {
-    "name": "desktopapp",
+    "name": "invoiceApp",
     "version": "1.0.0",
-    "description": "first desktop app",
+    "description": "invoice desktop app",
     "main": "index.js",
     "scripts": {
         "postinstall": "install-app-deps",
-        "start": "npm install && electron ./app",
+        "start": "npm install && electron ./index.js",
         "pack": "build --dir",
         "dist": "build"
     },
     "build": {
-        "appId": "yourappid",
-        "category": "your.app.category.type",
-        "dmg": {
-            "icon": "./image/logo.ico",
-            "contents": [{
-                    "x": 110,
-                    "y": 150
-                },
-                {
-                    "x": 240,
-                    "y": 150,
-                    "type": "link",
-                    "path": "/Applications"
-                }
-            ]
-        }
+        "appId": "com.sai.app",
+        "icon": "image/logo.ico",
+        "iconSize": 80,
+        "iconTextSize": 12
     },
     "author": "sai",
     "license": "ISC",
     "devDependencies": {
-        "electron": "^12.0.7"
+        "electron": "^12.0.7",
+        "electron-packager": "^15.2.0"
     },
     "dependencies": {
         "electron-builder": "^22.10.5",

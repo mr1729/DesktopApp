@@ -1,35 +1,35 @@
 let fs = require('fs');
+let storage = require('node-persist');
 let pdfDoc = require('pdfkit');
-let employeeFileName = "employeeDetails"
-let Employees = new Array();
+let Emps = new Array();
 let errors = 0;
 
-function load() {
+async function load() {
 
-    document.getElementById("newEmp").addEventListener("click", () => {
-        populateEmployeeDetails()
+    document.getElementById("newEmp").addEventListener("click", async() => {
+        await populateEmployeeDetails()
         document.getElementById("newEmpContent").style.display = "block";
         document.getElementById("genInvContent").style.display = "none";
         document.getElementById("modEmpContent").style.display = "none";
     })
 
-    document.getElementById("modEmp").addEventListener("click", () => {
-        populateEmployeeDetails()
-        populateModEmployeeTable()
+    document.getElementById("modEmp").addEventListener("click", async() => {
+        await populateEmployeeDetails();
+        await populateModEmployeeTable();
         document.getElementById("newEmpContent").style.display = "none";
         document.getElementById("genInvContent").style.display = "none";
         document.getElementById("modEmpContent").style.display = "block";
     })
 
-    document.getElementById("genInv").addEventListener("click", () => {
-        populateEmployeeDetails()
+    document.getElementById("genInv").addEventListener("click", async() => {
+        await populateEmployeeDetails()
         document.getElementById("newEmpContent").style.display = "none";
         document.getElementById("genInvContent").style.display = "block";
         document.getElementById("modEmpContent").style.display = "none";
     })
 }
 
-function insertIntoFile() {
+async function insertIntoFile() {
     validateNewEmp()
     if (errors == 0) {
         var firstname = document.getElementById("fname").value;
@@ -37,30 +37,21 @@ function insertIntoFile() {
         var pay = document.getElementById("pay").value;
         var net = document.getElementById("net").value;
         var companyname = document.getElementById("cname").value;
-        var address = document.getElementById("addr1").value + "*" + document.getElementById("addr2").value + "*" + document.getElementById("addr3").value;
-        var data = firstname + "~" + lastname + "~" + pay + "~" + net + "~" + companyname + "~" + address + "\n";
-        fs.appendFile(employeeFileName, data, () => { console.log("Employee Record Inserted" + data) });
+        var addr1 = document.getElementById("addr1").value;
+        var addr2 = document.getElementById("addr2").value;
+        var addr3 = document.getElementById("addr3").value;
+        await storage.init();
+        await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
         document.getElementById("message").setAttribute("class", "success");
         document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
         clearFields();
     }
 }
 
-function populateEmployeeDetails() {
-    if (fs.existsSync(employeeFileName)) {
-        let data = fs.readFileSync(employeeFileName, 'utf8').split('\n')
-        data.forEach((contact, index) => {
-            if (contact != "" && !Employees.includes(contact)) {
-                Employees.push(contact)
-            }
-        })
-    } else {
-        console.log("File Doesn\'t Exist. Creating new file.")
-        fs.writeFile(employeeFileName, '', (err) => {
-            if (err)
-                console.log(err)
-        })
-    }
+async function populateEmployeeDetails() {
+    await storage.init();
+    Emps = await storage.values();
+
 
     document.querySelectorAll('.modEmpOptions').forEach(function(a) {
         a.remove()
@@ -69,35 +60,38 @@ function populateEmployeeDetails() {
         a.remove()
     })
 
-    Employees.forEach((value, index, array) => {
-        var arr = value.split("~");
+    Emps.forEach((value, index, array) => {
         var optionMod = document.createElement("option");
-        optionMod.setAttribute("value", index)
+        var key = value[0] + " " + value[1];
+        optionMod.setAttribute("value", key)
         optionMod.setAttribute("class", "modEmpOptions")
-        var text = document.createTextNode(arr[0] + " " + arr[1]);
+        var text = document.createTextNode(key);
         optionMod.appendChild(text);
         document.getElementById("modEmployeeList").add(optionMod);
 
         var optionNewEmp = document.createElement("option");
-        optionNewEmp.setAttribute("value", index)
+        optionNewEmp.setAttribute("value", key)
         optionNewEmp.setAttribute("class", "newEmpOptions")
-        var text2 = document.createTextNode(arr[0] + " " + arr[1]);
+        var text2 = document.createTextNode(key);
         optionNewEmp.appendChild(text2);
         document.getElementById("employeeList").add(optionNewEmp);
     })
 }
 
-function populateInvoice() {
+async function populateInvoice() {
 
     validateGenInv();
     if (errors === 0) {
-        var index = document.getElementById("employeeList").value;
-        var employee = Employees[index].split("~");
+        var key = document.getElementById("employeeList").value;
+        await storage.init();
+        var employee = await storage.getItem(key);
         var name = employee[0] + " " + employee[1];
         var pay = employee[2];
         var net = employee[3];
         var companyName = employee[4];
-        var address = employee[5].split("*")
+        var addr1 = employee[5];
+        var addr2 = employee[6];
+        var addr3 = employee[7];
         var invoiceNum = document.getElementById("invoiceNum").value
         var invdate = document.getElementById("invDate").value
         var Desc = document.getElementById("desc1").value
@@ -126,9 +120,9 @@ function populateInvoice() {
 
         pdf.fillColor("black").font('./fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Bill To:", swiftPosx, swiftPosy + 110);
         pdf.font('./fonts/AsapCondensed-Medium.ttf').text(companyName, swiftPosx, swiftPosy + 130);
-        pdf.text(address[0], swiftPosx, swiftPosy + 150);
-        pdf.text(address[1], swiftPosx, swiftPosy + 170);
-        pdf.text(address[2], swiftPosx, swiftPosy + 190);
+        pdf.text(addr1, swiftPosx, swiftPosy + 150);
+        pdf.text(addr2, swiftPosx, swiftPosy + 170);
+        pdf.text(addr3, swiftPosx, swiftPosy + 190);
 
         const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
         pdf.text("Invoice #:  " + invoiceNum, invNoPosx, swiftPosy);
@@ -248,7 +242,7 @@ function validateGenInv() {
         errors = 1;
         document.getElementById("genMessage").setAttribute("class", "error");
         document.getElementById("genMessage").innerHTML = "******Plese Enter Hours******";
-    } else if (index === undefined || Employees.length <= 0) {
+    } else if (index === undefined || Emps.length <= 0) {
         errors = 1;
         document.getElementById("genMessage").setAttribute("class", "error");
         document.getElementById("genMessage").innerHTML = "******Please Select An Employee******";
@@ -257,69 +251,63 @@ function validateGenInv() {
     }
 }
 
-function populateModEmployeeTable() {
-    var index = document.getElementById("modEmployeeList").value;
-    var employee = ["", "", "", "", ""];
-    var address = ["", "", ""]
-    if (index != undefined && Employees.length > 0) {
-        employee = Employees[index].split("~");
-        address = employee[5].split("*");
+async function populateModEmployeeTable() {
+    var key = document.getElementById("modEmployeeList").value;
+    var employee = ["", "", "", "", "", "", "", ""];
+    console.log(" emp is empty  -- " + employee);
+    if (key != undefined && Emps.length > 0) {
+        console.log(" got in here");
+        await storage.init();
+        employee = await storage.getItem(key);
+        console.log("this took some time  -- " + employee);
+
     }
     document.getElementById("modfname").value = employee[0];
     document.getElementById("modlname").value = employee[1];
     document.getElementById("modpay").value = employee[2];
     document.getElementById("modnet").value = employee[3];
     document.getElementById("modcname").value = employee[4];
-    document.getElementById("modaddr1").value = address[0];
-    document.getElementById("modaddr2").value = address[1];
-    document.getElementById("modaddr3").value = address[2];
+    document.getElementById("modaddr1").value = employee[5];
+    document.getElementById("modaddr2").value = employee[6];
+    document.getElementById("modaddr3").value = employee[7];
+
 }
 
-function insertModEmpIntoFile() {
-    var index = document.getElementById("modEmployeeList").value;
-    if (Employees.length > 0 && index != undefined) {
-        var employee = Employees[index].split("~");
-        var name = employee[0] + " " + employee[1]
+async function insertModEmpIntoFile() {
+    var key = document.getElementById("modEmployeeList").value;
+    if (Emps.length > 0 && key != undefined) {
+        await storage.init();
         var firstname = document.getElementById("modfname").value;
         var lastname = document.getElementById("modlname").value;
         var pay = document.getElementById("modpay").value;
         var net = document.getElementById("modnet").value;
         var companyname = document.getElementById("modcname").value;
-        var address = document.getElementById("modaddr1").value + "*" + document.getElementById("modaddr2").value + "*" + document.getElementById("modaddr3").value;
-        var data = firstname + "~" + lastname + "~" + pay + "~" + net + "~" + companyname + "~" + address;
-        if (!Employees.includes(data)) {
-            Employees.splice(index, 1);
-            Employees.push(data);
-            document.getElementById("message").setAttribute("class", "success");
-            document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
+        var addr1 = document.getElementById("modaddr1").value;
+        var addr2 = document.getElementById("modaddr2").value;
+        var addr3 = document.getElementById("modaddr3").value;
+        // var dataArray = [firstname, lastname, pay, net, companyname, addr1, addr2, addr3];
+        await storage.removeItem(key);
+        await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
+        await populateEmployeeDetails();
+        await populateModEmployeeTable();
+        document.getElementById("modMessage").setAttribute("class", "success")
+        document.getElementById("modMessage").innerHTML = "*******Modified Employee " + key + "******"
 
-            fs.writeFileSync("employeeDetails", Employees.join("\n") + "\n", 'utf-8');
-            populateEmployeeDetails();
-            populateModEmployeeTable();
-            document.getElementById("modMessage").setAttribute("class", "success")
-            document.getElementById("modMessage").innerHTML = "*******Modified Employee " + name + "******"
-        } else {
-            document.getElementById("modMessage").setAttribute("class", "error")
-            document.getElementById("modMessage").innerHTML = "*******No Change In Employee Data******"
-        }
     } else {
         document.getElementById("modMessage").setAttribute("class", "error")
         document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"
     }
 }
 
-function removeEmpFromFile() {
-    var index = document.getElementById("modEmployeeList").value;
-    if (Employees.length > 0 && index != undefined) {
-        var employee = Employees[index].split("~");
-        var name = employee[0] + " " + employee[1]
-        Employees.splice(index, 1);
-        var data = Employees.join("\n") + "\n";
-        fs.writeFileSync("employeeDetails", data, 'utf-8');
-        populateEmployeeDetails();
-        populateModEmployeeTable();
+async function removeEmpFromFile() {
+    var key = document.getElementById("modEmployeeList").value;
+    if (Emps.length > 0 && key != undefined) {
+        await storage.init();
+        await storage.removeItem(key);
+        await populateEmployeeDetails();
+        await populateModEmployeeTable();
         document.getElementById("modMessage").setAttribute("class", "error")
-        document.getElementById("modMessage").innerHTML = "*******Removed Employee " + name + "******"
+        document.getElementById("modMessage").innerHTML = "*******Removed Employee " + key + "******"
     } else {
         document.getElementById("modMessage").setAttribute("class", "error")
         document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"

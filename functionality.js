@@ -56,7 +56,7 @@ function populateEmployeeDetails() {
         })
     } else {
         console.log("File Doesn\'t Exist. Creating new file.")
-        fs.writeFile(filename, '', (err) => {
+        fs.writeFile(employeeFileName, '', (err) => {
             if (err)
                 console.log(err)
         })

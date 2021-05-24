@@ -40,7 +40,7 @@ async function insertIntoFile() {
         var addr1 = document.getElementById("addr1").value;
         var addr2 = document.getElementById("addr2").value;
         var addr3 = document.getElementById("addr3").value;
-        await storage.init();
+        await storage.init({ dir: __dirname + '/data/storage' });
         await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
         document.getElementById("message").setAttribute("class", "success");
         document.getElementById("message").innerHTML = "Successfully inserted the emplyee data!";
@@ -49,10 +49,8 @@ async function insertIntoFile() {
 }
 
 async function populateEmployeeDetails() {
-    await storage.init();
+    await storage.init({ dir: __dirname + '/data/storage' });
     Emps = await storage.values();
-
-
     document.querySelectorAll('.modEmpOptions').forEach(function(a) {
         a.remove()
     })
@@ -83,7 +81,7 @@ async function populateInvoice() {
     validateGenInv();
     if (errors === 0) {
         var key = document.getElementById("employeeList").value;
-        await storage.init();
+        await storage.init({ dir: __dirname + '/data/storage' });
         var employee = await storage.getItem(key);
         var name = employee[0] + " " + employee[1];
         var pay = employee[2];
@@ -110,16 +108,16 @@ async function populateInvoice() {
         let swiftPosx = 75
         let swiftPosy = 100
         let invNoPosx = 350
-        pdf.fillColor("#000080").font('./fonts/AsapCondensed-SemiBold.ttf').fontSize(30).text("INVOICE", invPosx, 50)
+        pdf.fillColor("#000080").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(30).text("INVOICE", invPosx, 50)
 
-        pdf.fillColor("black").font('./fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Swift Technologies Inc.", swiftPosx, swiftPosy);
-        pdf.font('./fonts/AsapCondensed-Regular.ttf').text("580 Decker dr", swiftPosx, swiftPosy + 20);
+        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Swift Technologies Inc.", swiftPosx, swiftPosy);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Regular.ttf').text("580 Decker dr", swiftPosx, swiftPosy + 20);
         pdf.text("Suite 205", swiftPosx, swiftPosy + 40);
         pdf.text("Irving TX 75062", swiftPosx, swiftPosy + 60);
         pdf.text("Ph: (425) 559-1234\n\n", swiftPosx, swiftPosy + 80);
 
-        pdf.fillColor("black").font('./fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Bill To:", swiftPosx, swiftPosy + 110);
-        pdf.font('./fonts/AsapCondensed-Medium.ttf').text(companyName, swiftPosx, swiftPosy + 130);
+        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Bill To:", swiftPosx, swiftPosy + 110);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(companyName, swiftPosx, swiftPosy + 130);
         pdf.text(addr1, swiftPosx, swiftPosy + 150);
         pdf.text(addr2, swiftPosx, swiftPosy + 170);
         pdf.text(addr3, swiftPosx, swiftPosy + 190);
@@ -129,8 +127,8 @@ async function populateInvoice() {
         pdf.text("Invoice Date:  " + invdate.toLocaleDateString("en-US", options), invNoPosx, swiftPosy + 25);
         pdf.text("Due Date:  " + dueDate.toLocaleDateString("en-US", options), invNoPosx, swiftPosy + 50);
 
-        pdf.font('./fonts/AsapCondensed-SemiBold.ttf').text("Name of Employee:   ", invNoPosx, 180);
-        pdf.font('./fonts/AsapCondensed-Medium.ttf').text(name, invNoPosx, 205);
+        pdf.font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').text("Name of Employee:   ", invNoPosx, 180);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(name, invNoPosx, 205);
 
         let initRectx = 50
         let initRecty = 325
@@ -254,13 +252,10 @@ function validateGenInv() {
 async function populateModEmployeeTable() {
     var key = document.getElementById("modEmployeeList").value;
     var employee = ["", "", "", "", "", "", "", ""];
-    console.log(" emp is empty  -- " + employee);
+    console.log(__dirname);
     if (key != undefined && Emps.length > 0) {
-        console.log(" got in here");
-        await storage.init();
+        await storage.init({ dir: __dirname + '/data/storage' });
         employee = await storage.getItem(key);
-        console.log("this took some time  -- " + employee);
-
     }
     document.getElementById("modfname").value = employee[0];
     document.getElementById("modlname").value = employee[1];
@@ -276,7 +271,7 @@ async function populateModEmployeeTable() {
 async function insertModEmpIntoFile() {
     var key = document.getElementById("modEmployeeList").value;
     if (Emps.length > 0 && key != undefined) {
-        await storage.init();
+        await storage.init({ dir: __dirname + '/data/storage' });
         var firstname = document.getElementById("modfname").value;
         var lastname = document.getElementById("modlname").value;
         var pay = document.getElementById("modpay").value;
@@ -302,7 +297,7 @@ async function insertModEmpIntoFile() {
 async function removeEmpFromFile() {
     var key = document.getElementById("modEmployeeList").value;
     if (Emps.length > 0 && key != undefined) {
-        await storage.init();
+        await storage.init({ dir: __dirname + '/data/storage' });
         await storage.removeItem(key);
         await populateEmployeeDetails();
         await populateModEmployeeTable();

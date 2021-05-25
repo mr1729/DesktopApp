@@ -144,12 +144,12 @@ async function populateInvoice() {
         pdf.text("Hours", 390, initRecty + 2);
         pdf.text("Amount", 475, initRecty + 2);
 
-        pdf.fill("black").text(Desc, initRectx + 5, initRecty + 50);
+        pdf.fill("black").text(Desc, initRectx + 5, initRecty + 50, { width: 248 });
         var myObj = {
             style: "currency",
             currency: "USD"
         }
-        pdf.text("$ " + pay, 320, initRecty + 50);
+        pdf.text("$ " + pay, 320, initRecty + 50, { width: 248 });
         pdf.text(hours, 390, initRecty + 50);
         pdf.text(" " + (hours * pay).toLocaleString("en-US", myObj), 452, initRecty + 50);
         pdf.text("Total:     " + (hours * pay).toLocaleString("en-US", myObj), 400, initRecty + 426);

@@ -271,22 +271,24 @@ async function populateModEmployeeTable() {
 async function insertModEmpIntoFile() {
     var key = document.getElementById("modEmployeeList").value;
     if (Emps.length > 0 && key != undefined) {
-        await storage.init({ dir: __dirname + '/data/storage' });
-        var firstname = document.getElementById("modfname").value;
-        var lastname = document.getElementById("modlname").value;
-        var pay = document.getElementById("modpay").value;
-        var net = document.getElementById("modnet").value;
-        var companyname = document.getElementById("modcname").value;
-        var addr1 = document.getElementById("modaddr1").value;
-        var addr2 = document.getElementById("modaddr2").value;
-        var addr3 = document.getElementById("modaddr3").value;
-        // var dataArray = [firstname, lastname, pay, net, companyname, addr1, addr2, addr3];
-        await storage.removeItem(key);
-        await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
-        await populateEmployeeDetails();
-        await populateModEmployeeTable();
-        document.getElementById("modMessage").setAttribute("class", "success")
-        document.getElementById("modMessage").innerHTML = "*******Modified Employee " + key + "******"
+        if (confirm("Are you sure you want to modify employee: " + key + " ?")) {
+            await storage.init({ dir: __dirname + '/data/storage' });
+            var firstname = document.getElementById("modfname").value;
+            var lastname = document.getElementById("modlname").value;
+            var pay = document.getElementById("modpay").value;
+            var net = document.getElementById("modnet").value;
+            var companyname = document.getElementById("modcname").value;
+            var addr1 = document.getElementById("modaddr1").value;
+            var addr2 = document.getElementById("modaddr2").value;
+            var addr3 = document.getElementById("modaddr3").value;
+            // var dataArray = [firstname, lastname, pay, net, companyname, addr1, addr2, addr3];
+            await storage.removeItem(key);
+            await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
+            await populateEmployeeDetails();
+            await populateModEmployeeTable();
+            document.getElementById("modMessage").setAttribute("class", "success")
+            document.getElementById("modMessage").innerHTML = "*******Modified Employee " + key + "******"
+        }
 
     } else {
         document.getElementById("modMessage").setAttribute("class", "error")
@@ -295,16 +297,20 @@ async function insertModEmpIntoFile() {
 }
 
 async function removeEmpFromFile() {
+
     var key = document.getElementById("modEmployeeList").value;
     if (Emps.length > 0 && key != undefined) {
-        await storage.init({ dir: __dirname + '/data/storage' });
-        await storage.removeItem(key);
-        await populateEmployeeDetails();
-        await populateModEmployeeTable();
-        document.getElementById("modMessage").setAttribute("class", "error")
-        document.getElementById("modMessage").innerHTML = "*******Removed Employee " + key + "******"
+        if (confirm("Are you sure you want to delete employee: " + key + " ?")) {
+            await storage.init({ dir: __dirname + '/data/storage' });
+            await storage.removeItem(key);
+            await populateEmployeeDetails();
+            await populateModEmployeeTable();
+            document.getElementById("modMessage").setAttribute("class", "error")
+            document.getElementById("modMessage").innerHTML = "*******Removed Employee " + key + "******"
+        }
     } else {
         document.getElementById("modMessage").setAttribute("class", "error")
         document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"
     }
+
 }

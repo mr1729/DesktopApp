@@ -13,6 +13,7 @@
                 <li><a href="#" id="newEmp">Enter New Employee</a></li>
                 <li><a href="#" id="genInv">Generate Invoice</a></li>
                 <li><a href="#" id="modEmp">Modify Employee</a></li>
+                <li><a href="#" id="settings">Settings</a></li>
             </ul>
         </div>
 
@@ -138,6 +139,41 @@
                 <h3 align="center" id="modMessage"></h3>
             </div>
             </p>
+        </div>
+
+        <div class="main_content" id="settingsContent">
+            <div class="header">
+                <h2>Settings</h2>
+            </div>
+            <table>
+                <tr>
+                    <td>Enterprise Name: </td>
+                    <td><input type="text" placeholder="company name" id="entname" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address1: </td>
+                    <td><input type="text" placeholder="street.," id="entaddr1" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address2: </td>
+                    <td><input type="text" placeholder="floor, apt, suite" id="entaddr2" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Address3: </td>
+                    <td><input type="text" placeholder="city, state, zip" id="entaddr3" size="50"></td>
+                </tr>
+                <tr>
+                    <td>Phone: </td>
+                    <td><input type="text" placeholder="987-654-3210" id="entphone" size="50"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><button onclick="saveAddress()">Save</button></td>
+                </tr>
+            </table>
+
+            <div align="center" id="entMessage"></div>
+
+
         </div>
 
     </div>

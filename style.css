@@ -86,6 +86,10 @@ body {
     display: none;
 }
 
+#settingsContent {
+    display: none;
+}
+
 input {
     width: 300px;
     padding: 12px 20px;

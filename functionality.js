@@ -93,7 +93,7 @@ async function populateInvoice() {
         var key = document.getElementById("employeeList").value;
         await storage.init({ dir: __dirname + '/data/storage' });
         var employee = await storage.getItem(key);
-        var enterprise = await storage.getItem("EnterpriseDetails") | ["Please", "Enter", "Enterprise", "Details", "1234567890"];
+        var enterprise = ["Swift Technologies Inc.", "4950 N. O'Connor Blvd", "Suite 207", "Irving TX 75062", "(425)-559-1234"];
         var name = employee[0] + " " + employee[1];
         var pay = employee[2];
         var net = employee[3];

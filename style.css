@@ -86,6 +86,10 @@ body {
     display: none;
 }
 
+#settingsContent {
+    display: none;
+}
+
 input {
     width: 300px;
     padding: 12px 20px;
@@ -146,4 +150,50 @@ table {
 
 .success {
     color: green;
+}
+
+.cal {
+    padding-top: 30px;
+}
+
+.week {
+    width: 600px;
+    padding: 5px 5px 5px 5px;
+}
+
+.week li {
+    display: inline-block;
+    height: 75px;
+    width: 75px;
+    color: blueviolet;
+    border: 1px solid #000;
+}
+
+.date {
+    width: 600px;
+    padding: 5px 5px 5px 5px;
+}
+
+.date li {
+    display: inline-block;
+    height: 75px;
+    width: 75px;
+    color: blueviolet;
+    border: 1px solid #000;
+}
+
+.date li:hover {
+    background-color: blanchedalmond;
+}
+
+.dt_hrs {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: #f3f5f9;
+    display: inline-block;
+    border: 1px solid #f3f5f9;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding-bottom: 2px;
 }

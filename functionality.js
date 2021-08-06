@@ -1,5 +1,6 @@
 let fs = require('fs');
 let storage = require('node-persist');
+const { end } = require('pdfkit');
 let pdfDoc = require('pdfkit');
 let Emps = new Array();
 let errors = 0;
@@ -11,6 +12,8 @@ async function load() {
         document.getElementById("newEmpContent").style.display = "block";
         document.getElementById("genInvContent").style.display = "none";
         document.getElementById("modEmpContent").style.display = "none";
+        document.getElementById("settingsContent").style.display = "none";
+        document.getElementById("genInvDtContent").style.display = "none";
     })
 
     document.getElementById("modEmp").addEventListener("click", async() => {
@@ -19,6 +22,8 @@ async function load() {
         document.getElementById("newEmpContent").style.display = "none";
         document.getElementById("genInvContent").style.display = "none";
         document.getElementById("modEmpContent").style.display = "block";
+        document.getElementById("settingsContent").style.display = "none";
+        document.getElementById("genInvDtContent").style.display = "none";
     })
 
     document.getElementById("genInv").addEventListener("click", async() => {
@@ -26,6 +31,24 @@ async function load() {
         document.getElementById("newEmpContent").style.display = "none";
         document.getElementById("genInvContent").style.display = "block";
         document.getElementById("modEmpContent").style.display = "none";
+        document.getElementById("settingsContent").style.display = "none";
+        document.getElementById("genInvDtContent").style.display = "none";
+    })
+
+    document.getElementById("settings").addEventListener("click", async() => {
+        document.getElementById("newEmpContent").style.display = "none";
+        document.getElementById("genInvContent").style.display = "none";
+        document.getElementById("modEmpContent").style.display = "none";
+        document.getElementById("settingsContent").style.display = "block";
+        document.getElementById("genInvDtContent").style.display = "none";
+    })
+
+    document.getElementById("genInvDt").addEventListener("click", async() => {
+        document.getElementById("newEmpContent").style.display = "none";
+        document.getElementById("genInvContent").style.display = "none";
+        document.getElementById("modEmpContent").style.display = "none";
+        document.getElementById("settingsContent").style.display = "none";
+        document.getElementById("genInvDtContent").style.display = "block";
     })
 }
 
@@ -83,6 +106,7 @@ async function populateInvoice() {
         var key = document.getElementById("employeeList").value;
         await storage.init({ dir: __dirname + '/data/storage' });
         var employee = await storage.getItem(key);
+        var enterprise = ["Swift Technologies Inc.", "4950 N. O'Connor Blvd", "Suite 207", "Irving TX 75062", "(425)-559-1234"];
         var name = employee[0] + " " + employee[1];
         var pay = employee[2];
         var net = employee[3];
@@ -108,13 +132,14 @@ async function populateInvoice() {
         let swiftPosx = 75
         let swiftPosy = 100
         let invNoPosx = 350
+        let invNoPosy = swiftPosy + 75
         pdf.fillColor("#000080").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(30).text("INVOICE", invPosx, 50)
 
-        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Swift Technologies Inc.", swiftPosx, swiftPosy);
-        pdf.font(__dirname + '/fonts/AsapCondensed-Regular.ttf').text("580 Decker dr", swiftPosx, swiftPosy + 20);
-        pdf.text("Suite 205", swiftPosx, swiftPosy + 40);
-        pdf.text("Irving TX 75062", swiftPosx, swiftPosy + 60);
-        pdf.text("Ph: (425) 559-1234\n\n", swiftPosx, swiftPosy + 80);
+        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text(enterprise[0], swiftPosx, swiftPosy);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Regular.ttf').text(enterprise[1], swiftPosx, swiftPosy + 20);
+        pdf.text(enterprise[2], swiftPosx, swiftPosy + 40);
+        pdf.text(enterprise[3], swiftPosx, swiftPosy + 60);
+        pdf.text("Ph: " + enterprise[4], swiftPosx, swiftPosy + 80);
 
         pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Bill To:", swiftPosx, swiftPosy + 110);
         pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(companyName, swiftPosx, swiftPosy + 130);
@@ -122,13 +147,15 @@ async function populateInvoice() {
         pdf.text(addr2, swiftPosx, swiftPosy + 170);
         pdf.text(addr3, swiftPosx, swiftPosy + 190);
 
-        const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
-        pdf.text("Invoice #:  " + invoiceNum, invNoPosx, swiftPosy);
-        pdf.text("Invoice Date:  " + invdate.toLocaleDateString("en-US", options), invNoPosx, swiftPosy + 25);
-        pdf.text("Due Date:  " + dueDate.toLocaleDateString("en-US", options), invNoPosx, swiftPosy + 50);
+        pdf.image(__dirname + '/image/swiftlogo.png', invNoPosx, swiftPosy, { width: 145 });
 
-        pdf.font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').text("Name of Employee:   ", invNoPosx, 180);
-        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(name, invNoPosx, 205);
+        const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
+        pdf.text("Invoice #:  " + invoiceNum, invNoPosx, invNoPosy);
+        pdf.text("Invoice Date:  " + invdate.toLocaleDateString("en-US", options), invNoPosx, invNoPosy + 25);
+        pdf.text("Due Date:  " + dueDate.toLocaleDateString("en-US", options), invNoPosx, invNoPosy + 50);
+
+        pdf.font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').text("Name of Employee:   ", invNoPosx, 250);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(name, invNoPosx, 270);
 
         let initRectx = 50
         let initRecty = 325
@@ -281,7 +308,6 @@ async function insertModEmpIntoFile() {
             var addr1 = document.getElementById("modaddr1").value;
             var addr2 = document.getElementById("modaddr2").value;
             var addr3 = document.getElementById("modaddr3").value;
-            // var dataArray = [firstname, lastname, pay, net, companyname, addr1, addr2, addr3];
             await storage.removeItem(key);
             await storage.setItem(firstname + " " + lastname, [firstname, lastname, pay, net, companyname, addr1, addr2, addr3]);
             await populateEmployeeDetails();
@@ -313,4 +339,45 @@ async function removeEmpFromFile() {
         document.getElementById("modMessage").innerHTML = "*******Please Select An Employee********"
     }
 
+}
+
+async function saveAddress() {
+    await storage.init({ dir: __dirname + '/data/storage' });
+    var entName = document.getElementById("entname").value;
+    var entAddr1 = document.getElementById("entaddr1").value;
+    var entAddr2 = document.getElementById("entaddr2").value;
+    var entAddr3 = document.getElementById("entaddr3").value;
+    var phone = document.getElementById("phone").value;
+    await storage.setItem("EnterpriseDetails", [entName, entAddr1, entAddr2, entAddr3, phone]);
+    document.getElementById("entMessage").setAttribute("class", "success")
+    document.getElementById("entMessage").innerHTML = "*******Saved Details of Enterprise********"
+
+}
+
+function populateCalendar() {
+    var year = document.getElementById("year").value;
+    var month = Number(document.getElementById("mon").value);
+
+    if (year != undefined && month != undefined) {
+
+        var startDate = new Date(year, month, 1);
+        var endDate = new Date(year, month + 1, 0);
+        var startDay = startDate.getDay();
+        console.log(year + "-" + month + " start date " + startDate.toUTCString() + " end date " + endDate.toUTCString())
+
+        for (let i = 0; i < 42; i++) {
+            document.getElementById(i).innerText = '\xa0';
+            var element = document.getElementById("dt_hrs_" + i)
+            element.disabled = true;
+            element.value = "";
+        }
+
+        for (let i = 0; i < endDate.getDate(); i++) {
+            document.getElementById(startDay + i).innerText = i + 1;
+            var element = document.getElementById("dt_hrs_" + (startDay + i));
+            element.disabled = false;
+            element.value = 0;
+        }
+
+    }
 }

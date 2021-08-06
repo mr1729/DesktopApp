@@ -11,7 +11,8 @@
             <h2>Invoicing</h2>
             <ul>
                 <li><a href="#" id="newEmp">Enter New Employee</a></li>
-                <li><a href="#" id="genInv">Generate Invoice</a></li>
+                <li><a href="#" id="genInv">Generate Invoice by total hours</a></li>
+                <li><a href="#" id="genInvDt">Generate Invoice by dates</a></li>
                 <li><a href="#" id="modEmp">Modify Employee</a></li>
                 <li><a href="#" id="settings">Settings</a></li>
             </ul>
@@ -176,7 +177,218 @@
 
         </div>
 
-    </div>
+        <div class="main_content" id="genInvDtContent">
+            <div class="header">
+                <h2>Generate Invoice By Dates</h2>
+            </div>
+            <table>
+                <tr>
+                    <td>Choose an Employee:<select id="employeeListDt"></select></td>
+                    <td>Invoice Number: <input type="text" id="invoiceNumDt"></td>
+                    <td>Invoice date: <input type="date" id="invDateDt"></td>
+                </tr>
+            </table>
+
+            <span class="monthSelector">
+                <select name="months" id="mon" onchange="populateCalendar()">
+                    <option value="0" class="month">Jan</option>
+                    <option value="1" class="month">Feb</option>
+                    <option value="2" class="month">Mar</option>
+                    <option value="3" class="month">Apr</option>
+                    <option value="4" class="month">May</option>
+                    <option value="5" class="month">Jun</option>
+                    <option value="6" class="month">Jul</option>
+                    <option value="7" class="month">Aug</option>
+                    <option value="8" class="month">Sep</option>
+                    <option value="9" class="month">Oct</option>
+                    <option value="10" class="month">Nov</option>
+                    <option value="1" class="month">Dec</option>
+                </select>
+                <input type="number" id="year" onchange="populateCalendar()">
+            </span>
+
+            <div class="cal">
+                <ul class="week">
+                    <li class="weekdays">Sun</li>
+                    <li class="weekdays">Mon</li>
+                    <li class="weekdays">Tue</li>
+                    <li class="weekdays">Wed</li>
+                    <li class="weekdays">Thu</li>
+                    <li class="weekdays">Fri</li>
+                    <li class="weekdays">Sat</li>
+                </ul>
+                <ul class="date">
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="0"></p><input type="text" class="dt_hrs" id="dt_hrs_0"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="1"></p><input type="text" class="dt_hrs" id="dt_hrs_1"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="2"></p><input type="text" class="dt_hrs" id="dt_hrs_2"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="3"></p><input type="text" class="dt_hrs" id="dt_hrs_3"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="4"></p><input type="text" class="dt_hrs" id="dt_hrs_4"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="5"></p><input type="text" class="dt_hrs" id="dt_hrs_5"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="6"></p><input type="text" class="dt_hrs" id="dt_hrs_6"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="7"></p><input type="text" class="dt_hrs" id="dt_hrs_7"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="8"></p><input type="text" class="dt_hrs" id="dt_hrs_8"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="9"></p><input type="text" class="dt_hrs" id="dt_hrs_9"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="10"></p><input type="text" class="dt_hrs" id="dt_hrs_10"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="11"></p><input type="text" class="dt_hrs" id="dt_hrs_11"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="12"></p><input type="text" class="dt_hrs" id="dt_hrs_12"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="13"></p><input type="text" class="dt_hrs" id="dt_hrs_13"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="14"></p><input type="text" class="dt_hrs" id="dt_hrs_14"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="15"></p><input type="text" class="dt_hrs" id="dt_hrs_15"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="16"></p><input type="text" class="dt_hrs" id="dt_hrs_16"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="17"></p><input type="text" class="dt_hrs" id="dt_hrs_17"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="18"></p><input type="text" class="dt_hrs" id="dt_hrs_18"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="19"></p><input type="text" class="dt_hrs" id="dt_hrs_19"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="20"></p><input type="text" class="dt_hrs" id="dt_hrs_20"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="21"></p><input type="text" class="dt_hrs" id="dt_hrs_21"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="22"></p><input type="text" class="dt_hrs" id="dt_hrs_22"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="23"></p><input type="text" class="dt_hrs" id="dt_hrs_23"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="24"></p><input type="text" class="dt_hrs" id="dt_hrs_24"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="25"></p><input type="text" class="dt_hrs" id="dt_hrs_25"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="26"></p><input type="text" class="dt_hrs" id="dt_hrs_26"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="27"></p><input type="text" class="dt_hrs" id="dt_hrs_27"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="28"></p><input type="text" class="dt_hrs" id="dt_hrs_28"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="29"></p><input type="text" class="dt_hrs" id="dt_hrs_29"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="30"></p><input type="text" class="dt_hrs" id="dt_hrs_30"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="31"></p><input type="text" class="dt_hrs" id="dt_hrs_31"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="32"></p><input type="text" class="dt_hrs" id="dt_hrs_32"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="33"></p><input type="text" class="dt_hrs" id="dt_hrs_33"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="34"></p><input type="text" class="dt_hrs" id="dt_hrs_34"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="35"></p><input type="text" class="dt_hrs" id="dt_hrs_35"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="36"></p><input type="text" class="dt_hrs" id="dt_hrs_36"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="37"></p><input type="text" class="dt_hrs" id="dt_hrs_37"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="38"></p><input type="text" class="dt_hrs" id="dt_hrs_38"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="39"></p><input type="text" class="dt_hrs" id="dt_hrs_39"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="40"></p><input type="text" class="dt_hrs" id="dt_hrs_40"></div>
+                    </li>
+                    <li class="each_dt">
+                        <div class="date_data">
+                            <p id="41"></p><input type="text" class="dt_hrs" id="dt_hrs_41"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
 </body>
 

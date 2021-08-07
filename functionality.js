@@ -44,6 +44,7 @@ async function load() {
     })
 
     document.getElementById("genInvDt").addEventListener("click", async() => {
+        await populateEmployeeDetails()
         document.getElementById("newEmpContent").style.display = "none";
         document.getElementById("genInvContent").style.display = "none";
         document.getElementById("modEmpContent").style.display = "none";
@@ -80,6 +81,9 @@ async function populateEmployeeDetails() {
     document.querySelectorAll('.newEmpOptions').forEach(function(a) {
         a.remove()
     })
+    document.querySelectorAll('.employeeListDtOptions').forEach(function(a) {
+        a.remove()
+    })
 
     Emps.forEach((value, index, array) => {
         var optionMod = document.createElement("option");
@@ -89,6 +93,14 @@ async function populateEmployeeDetails() {
         var text = document.createTextNode(key);
         optionMod.appendChild(text);
         document.getElementById("modEmployeeList").add(optionMod);
+
+        var optionMod = document.createElement("option");
+        var key = value[0] + " " + value[1];
+        optionMod.setAttribute("value", key)
+        optionMod.setAttribute("class", "employeeListDtOptions")
+        var text = document.createTextNode(key);
+        optionMod.appendChild(text);
+        document.getElementById("employeeListDt").add(optionMod);
 
         var optionNewEmp = document.createElement("option");
         optionNewEmp.setAttribute("value", key)
@@ -358,7 +370,7 @@ function populateCalendar() {
     var year = document.getElementById("year").value;
     var month = Number(document.getElementById("mon").value);
 
-    if (year != undefined && month != undefined) {
+    if (year == "" || year != undefined || month != undefined) {
 
         var startDate = new Date(year, month, 1);
         var endDate = new Date(year, month + 1, 0);
@@ -379,5 +391,133 @@ function populateCalendar() {
             element.value = 0;
         }
 
+    }
+}
+
+function getDatesSum() {
+    var sum = 0;
+    for (let i = 0; i < 42; i++) {
+        var val = document.getElementById("dt_hrs_" + i).value;
+        if (val == "" || val == undefined) {
+            val = 0;
+        }
+        sum = sum + (+val);
+    }
+    return sum;
+}
+
+function validateGenInvDt() {
+    var invoiceNum = document.getElementById("invoiceNumDt").value;
+    var invdate = document.getElementById("invDateDt").value;
+    var year = document.getElementById("year").value;
+    var index = document.getElementById("employeeListDt").value;
+    if (invoiceNum === "" || invoiceNum === undefined) {
+        errors = 1;
+        document.getElementById("genMessageDt").setAttribute("class", "error");
+        document.getElementById("genMessageDt").innerHTML = "******Please Enter Invoice Number******";
+    } else if (invdate === "" || invdate === undefined) {
+        errors = 1;
+        document.getElementById("genMessageDt").setAttribute("class", "error");
+        document.getElementById("genMessageDt").innerHTML = "******Plese Enter Invoice Date******";
+    } else if (year === "" || year === undefined) {
+        errors = 1;
+        document.getElementById("genMessageDt").setAttribute("class", "error");
+        document.getElementById("genMessageDt").innerHTML = "******Plese Enter Year******";
+    } else if (index === undefined || Emps.length <= 0) {
+        errors = 1;
+        document.getElementById("genMessageDt").setAttribute("class", "error");
+        document.getElementById("genMessageDt").innerHTML = "******Please Select An Employee******";
+    } else {
+        errors = 0;
+    }
+}
+
+async function populateInvoiceDt() {
+
+    validateGenInvDt();
+    if (errors === 0) {
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var key = document.getElementById("employeeListDt").value;
+        await storage.init({ dir: __dirname + '/data/storage' });
+        var employee = await storage.getItem(key);
+        var enterprise = ["Swift Technologies Inc.", "4950 N. O'Connor Blvd", "Suite 207", "Irving TX 75062", "(425)-559-1234"];
+        var name = employee[0] + " " + employee[1];
+        var pay = employee[2];
+        var net = employee[3];
+        var companyName = employee[4];
+        var addr1 = employee[5];
+        var addr2 = employee[6];
+        var addr3 = employee[7];
+        var invoiceNum = document.getElementById("invoiceNumDt").value;
+        var invdate = document.getElementById("invDateDt").value;
+        var Desc = "Service for month of " + months[document.getElementById("mon").value] + " " + document.getElementById("year").value;
+
+        var date = invdate.split("-");
+        invdate = new Date(date[0], date[1] - 1, date[2]);
+        var dueDate = new Date(date[0], date[1] - 1, date[2]);;
+        dueDate.setDate(dueDate.getDate() + parseInt(net, 10));
+
+        var hours = getDatesSum()
+
+        let pdf = new pdfDoc({ size: 'A4' });
+        let textSize = 16;
+        pdf.pipe(fs.createWriteStream('/Users/sai/Downloads/' + name + '.pdf'));
+        let invPosx = 250
+        let swiftPosx = 75
+        let swiftPosy = 100
+        let invNoPosx = 350
+        let invNoPosy = swiftPosy + 75
+        pdf.fillColor("#000080").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(30).text("INVOICE", invPosx, 50)
+
+        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text(enterprise[0], swiftPosx, swiftPosy);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Regular.ttf').text(enterprise[1], swiftPosx, swiftPosy + 20);
+        pdf.text(enterprise[2], swiftPosx, swiftPosy + 40);
+        pdf.text(enterprise[3], swiftPosx, swiftPosy + 60);
+        pdf.text("Ph: " + enterprise[4], swiftPosx, swiftPosy + 80);
+
+        pdf.fillColor("black").font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').fontSize(textSize).text("Bill To:", swiftPosx, swiftPosy + 110);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(companyName, swiftPosx, swiftPosy + 130);
+        pdf.text(addr1, swiftPosx, swiftPosy + 150);
+        pdf.text(addr2, swiftPosx, swiftPosy + 170);
+        pdf.text(addr3, swiftPosx, swiftPosy + 190);
+
+        pdf.image(__dirname + '/image/swiftlogo.png', invNoPosx, swiftPosy, { width: 145 });
+
+        const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
+        pdf.text("Invoice #:  " + invoiceNum, invNoPosx, invNoPosy);
+        pdf.text("Invoice Date:  " + invdate.toLocaleDateString("en-US", options), invNoPosx, invNoPosy + 25);
+        pdf.text("Due Date:  " + dueDate.toLocaleDateString("en-US", options), invNoPosx, invNoPosy + 50);
+
+        pdf.font(__dirname + '/fonts/AsapCondensed-SemiBold.ttf').text("Name of Employee:   ", invNoPosx, 250);
+        pdf.font(__dirname + '/fonts/AsapCondensed-Medium.ttf').text(name, invNoPosx, 270);
+
+        let initRectx = 50
+        let initRecty = 325
+        pdf.rect(initRectx, initRecty, 500, 25).lineWidth(2).fillOpacity(0.75).fillAndStroke("#000080", "black");
+        pdf.rect(initRectx, initRecty, 500, 425).lineWidth(2).stroke();
+        pdf.rect(initRectx, initRecty, 250, 425).lineWidth(2).stroke();
+        pdf.rect(initRectx + 250, initRecty, 75, 425).lineWidth(2).stroke();
+        pdf.rect(initRectx + 325, initRecty, 75, 425).lineWidth(2).stroke();
+        pdf.rect(initRectx + 325, initRecty + 425, 175, 25).lineWidth(2).stroke();
+
+        pdf.fill("white").fillOpacity(1).text("Description", 125, initRecty + 2);
+        pdf.text("Rate", 320, initRecty + 2);
+        pdf.text("Hours", 390, initRecty + 2);
+        pdf.text("Amount", 475, initRecty + 2);
+
+        pdf.fill("black").text(Desc, initRectx + 5, initRecty + 50, { width: 248 });
+        var myObj = {
+            style: "currency",
+            currency: "USD"
+        }
+        pdf.text("$ " + pay, 320, initRecty + 50, { width: 248 });
+        pdf.text(hours, 390, initRecty + 50);
+        pdf.text(" " + (hours * pay).toLocaleString("en-US", myObj), 452, initRecty + 50);
+        pdf.text("Total:     " + (hours * pay).toLocaleString("en-US", myObj), 400, initRecty + 426);
+
+        pdf.end()
+        document.getElementById("genMessageDt").setAttribute("class", "success");
+        document.getElementById("genMessageDt").innerHTML = "Successfully Generated PDF!";
+        clearFields();
     }
 }

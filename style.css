@@ -154,6 +154,8 @@ table {
 
 .cal {
     padding-top: 30px;
+    width: 650px;
+    float: left;
 }
 
 .week {
@@ -196,4 +198,12 @@ table {
     border-radius: 4px;
     box-sizing: border-box;
     padding-bottom: 2px;
+}
+
+.calWrap {
+    display: inline;
+}
+
+.btn_dt {
+    float: inline-end;
 }
